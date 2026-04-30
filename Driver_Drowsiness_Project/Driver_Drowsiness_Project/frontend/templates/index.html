@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Driver Drowsiness Detection</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        /* Simple popup styling */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            border: 2px solid #333;
+            background-color: #fff;
+            z-index: 100;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.5);
+        }
+        .popup input {
+            display: block;
+            margin: 10px 0;
+            padding: 5px;
+            width: 95%;
+        }
+        .popup button {
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Driver Drowsiness Detection System</h1>
+    <button onclick="openSignup()">Signup</button>
+    <button onclick="openLogin()">Login</button>
+</div>
+
+<div class="center">
+    <button id="startBtn" disabled onclick="startDetection()">Start Detection</button>
+</div>
+
+<!-- Login Popup -->
+<div id="loginBox" class="popup">
+    <h3>Login</h3>
+    <input type="text" id="loginUsername" placeholder="Username">
+    <input type="password" id="loginPassword" placeholder="Password">
+    <button onclick="login()">Login</button>
+    <button onclick="closeLogin()">Cancel</button>
+</div>
+
+<!-- Signup Popup -->
+<div id="signupBox" class="popup">
+    <h3>Signup</h3>
+    <input type="text" id="signupUsername" placeholder="Username">
+    <input type="email" id="signupEmail" placeholder="Email">
+    <input type="password" id="signupPassword" placeholder="Password">
+    <button onclick="signup()">Signup</button>
+    <button onclick="closeSignup()">Cancel</button>
+</div>
+
+<script>
+// Open and close popups
+function openLogin() { document.getElementById("loginBox").style.display = "block"; }
+function closeLogin() { document.getElementById("loginBox").style.display = "none"; }
+
+function openSignup() { document.getElementById("signupBox").style.display = "block"; }
+function closeSignup() { document.getElementById("signupBox").style.display = "none"; }
+
+// Login function (demo)
+function login() {
+    alert("Login Successful");
+    closeLogin();
+    document.getElementById("startBtn").disabled = false;
+}
+
+// Signup function (demo)
+function signup() {
+    const username = document.getElementById("signupUsername").value;
+    const email = document.getElementById("signupEmail").value;
+    const password = document.getElementById("signupPassword").value;
+
+    if (!username || !email || !password) {
+        alert("Please fill all fields!");
+        return;
+    }
+
+    // For now, just demo alert. Later you can send to backend via fetch/ajax
+    alert(`Signup Successful!\nUsername: ${username}\nEmail: ${email}`);
+    closeSignup();
+    document.getElementById("startBtn").disabled = false;
+}
+
+// Start detection
+function startDetection() {
+    window.location = "/detect";
+}
+</script>
+
+</body>
+</html>

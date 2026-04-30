@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Driver Drowsiness Detection</title>
+<style>
+body{background:black;color:white;text-align:center;font-family:Arial;}
+img{border:3px solid lime;}
+</style>
+</head>
+<body>
+
+<h1>Driver Drowsiness Detection</h1>
+
+<img id="video" width="640" height="480">
+
+<video id="camera" autoplay style="display:none"></video>
+<canvas id="canvas" width="640" height="480" style="display:none"></canvas>
+
+<h3>EAR : <span id="ear">0</span></h3>
+<h3>MAR : <span id="mar">0</span></h3>
+<h2 id="status">Detecting...</h2>
+
+<audio id="alarm" src="/static/alarm/alarm.wav"></audio>
+
+<script>
+const camera = document.getElementById("camera");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+const video = document.getElementById("video");
+const earText = document.getElementById("ear");
+const marText = document.getElementById("mar");
+const statusText = document.getElementById("status");
+const alarm = document.getElementById("alarm");
+
+navigator.mediaDevices.getUserMedia({video:true}).then(stream=>{
+    camera.srcObject = stream;
+});
+
+function sendFrame(){
+    ctx.drawImage(camera,0,0,640,480);
+    canvas.toBlob(function(blob){
+        let formData = new FormData();
+        formData.append("frame",blob);
+
+        fetch("/process_frame",{
+            method:"POST",
+            body:formData
+        })
+        .then(res=>res.json())
+        .then(data=>{
+            video.src = "data:image/jpeg;base64," + data.image;
+            earText.innerText = data.ear;
+            marText.innerText = data.mar;
+            statusText.innerText = data.status;
+
+            if(data.status==="DROWSY"){
+                alarm.play();
+            }
+        });
+    },"image/jpeg");
+}
+
+setInterval(sendFrame,200);
+</script>
+
+</body>
+</html>
